@@ -90,7 +90,7 @@
   /* ─── Two-Col Layout ─── */
   .two-col { display: flex; gap: 2rem; width: 100%; max-width: 1100px; align-items: flex-start; }
   .two-col .col { flex: 1; }
-  .two-col .col img { width: 100%; border-radius: 8px; box-shadow: 0 4px 24px rgba(0,0,0,0.5); }
+  .two-col .col img { width: 100%; max-height: 68vh; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 24px rgba(0,0,0,0.5); }
 
   /* ─── Section Divider ─── */
   .section-divider { text-align: center; }
@@ -225,8 +225,8 @@
 <!-- ════════════ SLIDE 8: Demographics ════════════ -->
 <div class="slide">
   <h2>Demographics</h2>
-  <div class="two-col" style="max-width:1100px;">
-    <div class="col">
+  <div style="display:flex; gap:1.5rem; align-items:center; width:100%; max-width:1150px;">
+    <div style="flex:0 0 auto;">
       <table>
         <tr><th>Variable</th><th>Value</th></tr>
         <tr><td>N</td><td>40</td></tr>
@@ -236,8 +236,8 @@
         <tr><td>Prior VR Experience</td><td>16 (40%)</td></tr>
       </table>
     </div>
-    <div class="col">
-      <img src="figures/png/fig1_demographics.png" alt="Demographics">
+    <div style="flex:1 1 0; min-width:0;">
+      <img src="figures/png/fig1_demographics.png" alt="Demographics" style="width:100%; max-height:65vh; object-fit:contain; border-radius:8px; box-shadow:0 4px 24px rgba(0,0,0,0.5);">
     </div>
   </div>
 </div>
@@ -320,21 +320,21 @@
 <!-- ════════════ SLIDE 14: Correlations with PHQ ════════════ -->
 <div class="slide">
   <h2>PHQ-9 vs Headtracking Correlations</h2>
-  <div class="two-col" style="max-width:1050px;">
-    <div class="col">
-      <h3>Near-Zero Correlations (Pearson)</h3>
+  <div style="display:flex; gap:1.5rem; align-items:center; width:100%; max-width:1150px; flex-wrap:wrap;">
+    <div style="flex:0 0 auto;">
+      <h3 style="margin-bottom:0.5rem;">Near-Zero Correlations (Pearson)</h3>
       <table>
         <tr><th>Measure</th><th><em>r</em></th><th><em>p</em></th></tr>
         <tr><td>Mean Total Speed</td><td>−.060</td><td>.712</td></tr>
         <tr><td>Mean Yaw Speed</td><td>−.081</td><td>.617</td></tr>
         <tr><td>SD of Total Speed</td><td>−.158</td><td>.329</td></tr>
       </table>
-      <div class="highlight" style="margin-top:1rem;">
-        Depression severity (as a continuous score) is <strong>not correlated</strong> with any headtracking summary measure at the participant level.
+      <div class="highlight" style="margin-top:0.8rem; max-width:300px; font-size:0.95rem;">
+        Depression severity is <strong>not correlated</strong> with any headtracking measure at the participant level.
       </div>
     </div>
-    <div class="col">
-      <img src="figures/png/fig12_yaw_speed_by_group.png" alt="Yaw Speed by Group">
+    <div style="flex:1 1 0; min-width:0;">
+      <img src="figures/png/fig12_yaw_speed_by_group.png" alt="Yaw Speed by Group" style="width:100%; max-height:65vh; object-fit:contain; border-radius:8px; box-shadow:0 4px 24px rgba(0,0,0,0.5);">
     </div>
   </div>
 </div>
