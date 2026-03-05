@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Report 1 – Headtracking &amp; Depression | Group Project</title>
+<style>
+  /* ─── Reset & Base ─── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #0d1117; color: #e6edf3; }
+
+  /* ─── Slide Container ─── */
+  .deck { position: relative; width: 100vw; height: 100vh; }
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    padding: 3rem 5rem;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.45s ease, transform 0.45s ease;
+    transform: translateX(40px);
+  }
+  .slide.active { opacity: 1; visibility: visible; transform: translateX(0); }
+
+  /* ─── Typography ─── */
+  h1 { font-size: 2.6rem; font-weight: 700; margin-bottom: 0.4rem; color: #58a6ff; line-height: 1.2; }
+  h2 { font-size: 2.0rem; font-weight: 600; margin-bottom: 1rem; color: #58a6ff; border-bottom: 2px solid #21262d; padding-bottom: 0.5rem; width: 100%; text-align: left; }
+  h3 { font-size: 1.3rem; font-weight: 600; color: #79c0ff; margin-bottom: 0.5rem; }
+  p, li { font-size: 1.15rem; line-height: 1.65; color: #c9d1d9; }
+  .subtitle { font-size: 1.3rem; color: #8b949e; margin-bottom: 0.3rem; }
+  .author { font-size: 1.1rem; color: #8b949e; margin-top: 1.5rem; }
+  strong, b { color: #f0f6fc; }
+  em { color: #d2a8ff; font-style: italic; }
+
+  /* ─── Lists ─── */
+  ul, ol { text-align: left; width: 100%; max-width: 960px; padding-left: 1.6rem; }
+  li { margin-bottom: 0.55rem; }
+  li::marker { color: #58a6ff; }
+
+  /* ─── Tables ─── */
+  table { border-collapse: collapse; margin: 1rem auto; font-size: 1rem; }
+  th { background: #161b22; color: #58a6ff; padding: 0.5rem 1rem; border: 1px solid #30363d; font-weight: 600; }
+  td { padding: 0.45rem 1rem; border: 1px solid #30363d; color: #c9d1d9; }
+  tr:nth-child(even) td { background: #0d1117; }
+  tr:nth-child(odd) td { background: #161b22; }
+
+  /* ─── Figures ─── */
+  .fig-container { display: flex; justify-content: center; align-items: center; gap: 1.2rem; flex-wrap: wrap; margin-top: 0.8rem; }
+  .fig-container img { max-height: 52vh; max-width: 90%; border-radius: 8px; box-shadow: 0 4px 24px rgba(0,0,0,0.5); }
+  .fig-container.two img { max-width: 48%; max-height: 46vh; }
+  .fig-caption { font-size: 0.9rem; color: #8b949e; text-align: center; margin-top: 0.5rem; width: 100%; }
+
+  /* ─── Stat Cards ─── */
+  .stat-row { display: flex; gap: 1.2rem; flex-wrap: wrap; justify-content: center; margin: 1rem 0; }
+  .stat-card {
+    background: #161b22; border: 1px solid #30363d; border-radius: 10px;
+    padding: 1.2rem 1.6rem; text-align: center; min-width: 150px; flex: 1; max-width: 220px;
+  }
+  .stat-card .num { font-size: 2.2rem; font-weight: 700; color: #58a6ff; }
+  .stat-card .label { font-size: 0.9rem; color: #8b949e; margin-top: 0.2rem; }
+
+  /* ─── Highlight Box ─── */
+  .highlight {
+    background: #161b22; border-left: 4px solid #f0883e; border-radius: 6px;
+    padding: 1rem 1.4rem; margin: 1rem 0; width: 100%; max-width: 960px; text-align: left;
+  }
+  .highlight.green { border-left-color: #3fb950; }
+  .highlight.red { border-left-color: #f85149; }
+  .highlight.blue { border-left-color: #58a6ff; }
+
+  /* ─── Navigation ─── */
+  .nav {
+    position: fixed; bottom: 1.5rem; right: 2rem; z-index: 1000;
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .nav button {
+    background: #21262d; color: #c9d1d9; border: 1px solid #30363d;
+    border-radius: 6px; padding: 0.5rem 1rem; font-size: 1rem; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .nav button:hover { background: #30363d; }
+  .nav .counter { font-size: 0.9rem; color: #8b949e; min-width: 60px; text-align: center; }
+
+  /* ─── Progress Bar ─── */
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: #58a6ff; transition: width 0.4s ease; z-index: 1000; }
+
+  /* ─── Title Slide ─── */
+  .slide.title-slide { text-align: center; }
+  .slide.title-slide h1 { font-size: 2.4rem; }
+
+  /* ─── Two-Col Layout ─── */
+  .two-col { display: flex; gap: 2rem; width: 100%; max-width: 1100px; align-items: flex-start; }
+  .two-col .col { flex: 1; }
+  .two-col .col img { width: 100%; border-radius: 8px; box-shadow: 0 4px 24px rgba(0,0,0,0.5); }
+
+  /* ─── Section Divider ─── */
+  .section-divider { text-align: center; }
+  .section-divider h1 { font-size: 3rem; color: #58a6ff; }
+  .section-divider .line { width: 80px; height: 3px; background: #58a6ff; margin: 1.2rem auto; border-radius: 2px; }
+
+  /* ─── Scrollable content ─── */
+  .content-scroll { overflow-y: auto; max-height: 80vh; width: 100%; max-width: 1000px; padding-right: 1rem; }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<div class="deck" id="deck">
+
+<!-- ════════════ SLIDE 1: Title ════════════ -->
+<div class="slide title-slide active">
+  <h1>Are Headtracking Measures an Indicator of Depressive Symptoms?</h1>
+  <p class="subtitle">Preliminary Data Visualization, Descriptive Statistics, and Inferential Analysis</p>
+  <p class="subtitle" style="margin-top:0.5rem; font-size:1rem; color:#6e7681;">Report 1 — BRSM Course Project</p>
+  <p class="author"><strong>Parv Shah</strong> (2025201093) &nbsp;|&nbsp; <strong>Hardik</strong> (2025201046) &nbsp;|&nbsp; <strong>Gaurav</strong> (2025201065)</p>
+  <p class="author" style="font-size:0.95rem;">February 2026</p>
+</div>
+
+<!-- ════════════ SLIDE 2: Background ════════════ -->
+<div class="slide">
+  <h2>Background &amp; Motivation</h2>
+  <ul>
+    <li><strong>Depression</strong> is a leading cause of disability worldwide, yet objective behavioral markers remain limited</li>
+    <li><strong>Psychomotor retardation</strong> — the clinically observed slowing of physical movement — is a hallmark symptom (PHQ-9 Item 8)</li>
+    <li>If depressed individuals move more slowly, this should manifest as <em>reduced head rotation</em> in immersive VR environments</li>
+    <li><strong>Srivastava et al. (2025)</strong> found that scanning speed in 360° VR videos was significantly lower in the moderate-severe depression group (<em>p</em> &lt; .001, η² = .295)</li>
+  </ul>
+  <div class="highlight blue" style="margin-top:1.2rem;">
+    <strong>This study:</strong> A replication using a Meta Quest 3 headset with N = 40 Indian college students viewing five 360° videos.
+  </div>
+</div>
+
+<!-- ════════════ SLIDE 3: Research Question ════════════ -->
+<div class="slide section-divider">
+  <h1>Research Question</h1>
+  <div class="line"></div>
+  <p style="font-size:1.4rem; max-width:800px; text-align:center; margin-top:1rem;">
+    Can headtracking measures (rotation speed, angular range) during 360° VR video viewing <em>distinguish</em> individuals with depressive symptoms from those without?
+  </p>
+</div>
+
+<!-- ════════════ SLIDE 4: Methods Overview ════════════ -->
+<div class="slide">
+  <h2>Methods Overview</h2>
+  <div class="stat-row">
+    <div class="stat-card"><div class="num">40</div><div class="label">Participants</div></div>
+    <div class="stat-card"><div class="num">5</div><div class="label">360° Videos</div></div>
+    <div class="stat-card"><div class="num">200</div><div class="label">Headtracking Files</div></div>
+    <div class="stat-card"><div class="num">~70 Hz</div><div class="label">Sampling Rate</div></div>
+  </div>
+  <div class="two-col" style="margin-top:1rem; max-width:1000px;">
+    <div class="col">
+      <h3>Measures</h3>
+      <ul>
+        <li><strong>PHQ-9</strong> — Depression (0–27)</li>
+        <li><strong>GAD-7</strong> — Anxiety (0–21)</li>
+        <li><strong>STAI-T</strong> — Trait Anxiety (20–80)</li>
+        <li><strong>PANAS-SF</strong> — Mood (Pre &amp; Post VR)</li>
+        <li><strong>VRNQ-VRISE</strong> — Simulator Sickness</li>
+        <li>Valence, Arousal, Presence per video</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h3>Five Videos</h3>
+      <ul>
+        <li><strong>V1:</strong> Abandoned Buildings (60s)</li>
+        <li><strong>V2:</strong> Beach (60s)</li>
+        <li><strong>V3:</strong> Campus (60s)</li>
+        <li><strong>V4:</strong> Horror — The Nun (~3 min)</li>
+        <li><strong>V5:</strong> Tahiti Surf (~3 min)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ SLIDE 5: Depression Classification ════════════ -->
+<div class="slide">
+  <h2>Depression Classification</h2>
+  <div class="two-col" style="max-width:1050px;">
+    <div class="col">
+      <h3>PHQ-9 Cutoff: ≥ 10</h3>
+      <ul>
+        <li>Standard clinical threshold for <strong>moderate depression</strong> (Kroenke et al., 2001)</li>
+        <li>Sensitivity 88%, Specificity 88% for MDD</li>
+        <li>Same threshold used by Srivastava et al. (2025)</li>
+      </ul>
+      <div class="stat-row" style="margin-top:1.2rem;">
+        <div class="stat-card"><div class="num">8</div><div class="label">Depressed (≥10)</div></div>
+        <div class="stat-card"><div class="num">32</div><div class="label">Non-Depressed (&lt;10)</div></div>
+      </div>
+      <div class="highlight red" style="margin-top:0.8rem;">
+        <strong>Key limitation:</strong> Unbalanced groups (20% vs 80%) — limits statistical power.
+      </div>
+    </div>
+    <div class="col">
+      <img src="figures/png/fig3_phq_severity.png" alt="PHQ-9 Severity">
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ SLIDE 6: Statistical Approach ════════════ -->
+<div class="slide">
+  <h2>Statistical Approach</h2>
+  <table>
+    <tr><th>Test</th><th>Purpose</th><th>Why This Test?</th></tr>
+    <tr><td>Shapiro-Wilk</td><td>Normality check</td><td>Tests distributional assumptions</td></tr>
+    <tr><td>Pearson <em>r</em></td><td>Correlations</td><td>Bivariate linear association</td></tr>
+    <tr><td>Welch's <em>t</em>-test</td><td>Group comparisons (Dep vs Non-Dep)</td><td>Independent-samples; no equal-variance assumption</td></tr>
+    <tr><td>Paired <em>t</em>-test</td><td>Pre-Post PANAS</td><td>Within-subject comparison</td></tr>
+    <tr><td>Cohen's <em>d</em></td><td>Effect sizes</td><td>Quantifies practical significance</td></tr>
+    <tr><td>Bonferroni</td><td>Multiple comparisons</td><td>α<sub>corrected</sub> = .05/25 = .002</td></tr>
+    <tr><td>IQR / <em>z</em>-score</td><td>Outlier detection</td><td>Clinical scores (IQR) vs headtracking (|z| &gt; 3)</td></tr>
+  </table>
+  <div class="highlight" style="margin-top:1rem;">
+    <strong>Why parametric despite non-normality?</strong> <em>t</em>-tests are robust to moderate non-normality (CLT). With <em>N</em> = 40, Welch's correction handles unequal variances.
+  </div>
+</div>
+
+<!-- ════════════ SLIDE 7: Section — Results ════════════ -->
+<div class="slide section-divider">
+  <h1>Results</h1>
+  <div class="line"></div>
+</div>
+
+<!-- ════════════ SLIDE 8: Demographics ════════════ -->
+<div class="slide">
+  <h2>Demographics</h2>
+  <div class="two-col" style="max-width:1100px;">
+    <div class="col">
+      <table>
+        <tr><th>Variable</th><th>Value</th></tr>
+        <tr><td>N</td><td>40</td></tr>
+        <tr><td>Gender</td><td>36 M (90%), 4 F (10%)</td></tr>
+        <tr><td>Age M (SD)</td><td>22.8 (1.8)</td></tr>
+        <tr><td>Age Range</td><td>19 – 27</td></tr>
+        <tr><td>Prior VR Experience</td><td>16 (40%)</td></tr>
+      </table>
+    </div>
+    <div class="col">
+      <img src="figures/png/fig1_demographics.png" alt="Demographics">
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ SLIDE 9: Clinical Scores ════════════ -->
+<div class="slide">
+  <h2>Clinical Measure Distributions</h2>
+  <div class="stat-row">
+    <div class="stat-card"><div class="num">6.03</div><div class="label">PHQ-9 Mean</div></div>
+    <div class="stat-card"><div class="num">5.00</div><div class="label">GAD-7 Mean</div></div>
+    <div class="stat-card"><div class="num">45.00</div><div class="label">STAI-T Mean</div></div>
+  </div>
+  <div class="fig-container">
+    <img src="figures/png/fig2_clinical_distributions.png" alt="Clinical Distributions">
+  </div>
+  <p class="fig-caption">Dashed red line on PHQ-9 = cutoff ≥ 10 for moderate depression. Both PHQ-9 and GAD-7 are positively skewed (non-normal).</p>
+</div>
+
+<!-- ════════════ SLIDE 10: Depression–Anxiety Covariance ════════════ -->
+<div class="slide">
+  <h2>Depression–Anxiety Covariance</h2>
+  <div class="fig-container two">
+    <img src="figures/png/fig7_phq_vs_gad.png" alt="PHQ vs GAD">
+    <img src="figures/png/fig4_correlation_heatmap.png" alt="Correlation Heatmap">
+  </div>
+  <div class="highlight blue" style="margin-top:0.8rem;">
+    PHQ-9 &amp; GAD-7: Pearson <strong><em>r</em> = .579</strong> (<em>p</em> &lt; .001) &nbsp;|&nbsp;
+    PHQ-9 &amp; STAI-T: Pearson <strong><em>r</em> = .642</strong> (<em>p</em> &lt; .001)<br>
+    → Depression and anxiety are strongly correlated. Must account for this in Report 2 (ANCOVA).
+  </div>
+</div>
+
+<!-- ════════════ SLIDE 11: Video Ratings ════════════ -->
+<div class="slide">
+  <h2>Video Emotional Profiles</h2>
+  <table>
+    <tr><th>Video</th><th>Valence M (SD)</th><th>Arousal M (SD)</th><th>Presence M (SD)</th></tr>
+    <tr><td>V1: Abandoned Buildings</td><td>5.20 (1.67)</td><td>4.60 (2.22)</td><td>29.60 (4.41)</td></tr>
+    <tr><td>V2: Beach</td><td>6.53 (1.75)</td><td>4.65 (2.03)</td><td>27.25 (5.31)</td></tr>
+    <tr><td>V3: Campus</td><td>6.15 (1.61)</td><td>4.33 (2.16)</td><td>26.95 (4.52)</td></tr>
+    <tr><td>V4: Horror (Nun)</td><td style="color:#f85149;">3.67 (1.85)</td><td style="color:#f0883e;">5.95 (1.68)</td><td>19.85 (5.44)</td></tr>
+    <tr><td>V5: Tahiti Surf</td><td style="color:#3fb950;">7.12 (1.68)</td><td style="color:#f0883e;">6.50 (1.69)</td><td>28.02 (4.79)</td></tr>
+  </table>
+  <div class="fig-container two" style="margin-top:0.6rem;">
+    <img src="figures/png/fig5_valence_arousal_by_video.png" alt="Valence & Arousal">
+    <img src="figures/png/fig6_presence_by_video.png" alt="Presence">
+  </div>
+</div>
+
+<!-- ════════════ SLIDE 12: Headtracking Across Videos ════════════ -->
+<div class="slide">
+  <h2>Headtracking: Speed Across Videos</h2>
+  <div class="fig-container">
+    <img src="figures/png/fig8_headtrack_speed_by_group.png" alt="Head Speed by Group">
+  </div>
+  <div class="highlight green" style="margin-top:0.8rem;">
+    V1 (Abandoned) highest mean speed (39.08°/s) | V4 (Horror) lowest (24.17°/s) — video content appears to drive exploration.<br>
+    <em>Formal one-way ANOVA testing deferred to Report 2.</em>
+  </div>
+</div>
+
+<!-- ════════════ SLIDE 13: Welch's t-test Results ════════════ -->
+<div class="slide">
+  <h2>Headtracking by Depression Group</h2>
+  <h3>Welch's <em>t</em>-tests (5 videos × 5 measures = 25 tests)</h3>
+  <table style="font-size:0.95rem;">
+    <tr><th>Video</th><th colspan="3">Mean Speed (Total)</th><th colspan="3">Total Angular Range</th></tr>
+    <tr><th></th><th><em>t</em></th><th><em>p</em></th><th><em>d</em></th><th><em>t</em></th><th><em>p</em></th><th><em>d</em></th></tr>
+    <tr><td>V1: Abandoned</td><td>−0.24</td><td>.816</td><td>−0.08</td><td>−0.22</td><td>.831</td><td>−0.07</td></tr>
+    <tr><td>V2: Beach</td><td>1.22</td><td>.239</td><td>0.38</td><td>1.76</td><td>.104</td><td>0.65</td></tr>
+    <tr><td>V3: Campus</td><td>−0.64</td><td>.532</td><td>−0.24</td><td>0.16</td><td>.878</td><td>0.05</td></tr>
+    <tr><td style="color:#f0883e;">V4: Horror</td><td>1.07</td><td>.303</td><td>0.37</td><td style="color:#f0883e;">2.21</td><td style="color:#f0883e;">.048</td><td style="color:#f0883e;">0.83</td></tr>
+    <tr><td>V5: Tahiti Surf</td><td>−0.66</td><td>.523</td><td>−0.21</td><td>−0.36</td><td>.727</td><td>−0.16</td></tr>
+  </table>
+  <div class="highlight red" style="margin-top:0.8rem;">
+    <strong>Key finding:</strong> No significant group differences after Bonferroni correction (α<sub>corrected</sub> = .002). V4 angular range (<em>p</em> = .048, <em>d</em> = 0.83) is uncorrected-significant but in the <em>opposite</em> direction — likely a Type I error.
+  </div>
+</div>
+
+<!-- ════════════ SLIDE 14: Correlations with PHQ ════════════ -->
+<div class="slide">
+  <h2>PHQ-9 vs Headtracking Correlations</h2>
+  <div class="two-col" style="max-width:1050px;">
+    <div class="col">
+      <h3>Near-Zero Correlations (Pearson)</h3>
+      <table>
+        <tr><th>Measure</th><th><em>r</em></th><th><em>p</em></th></tr>
+        <tr><td>Mean Total Speed</td><td>−.060</td><td>.712</td></tr>
+        <tr><td>Mean Yaw Speed</td><td>−.081</td><td>.617</td></tr>
+        <tr><td>SD of Total Speed</td><td>−.158</td><td>.329</td></tr>
+      </table>
+      <div class="highlight" style="margin-top:1rem;">
+        Depression severity (as a continuous score) is <strong>not correlated</strong> with any headtracking summary measure at the participant level.
+      </div>
+    </div>
+    <div class="col">
+      <img src="figures/png/fig12_yaw_speed_by_group.png" alt="Yaw Speed by Group">
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ SLIDE 15: Angular Range ════════════ -->
+<div class="slide">
+  <h2>Angular Range by Group</h2>
+  <div class="fig-container">
+    <img src="figures/png/fig10_angular_range_by_group.png" alt="Angular Range by Group">
+  </div>
+  <p class="fig-caption">Total angular range explored per video by depression group. Error bars = 95% CI. Only V4 shows a significant difference — and in the opposite direction to the psychomotor retardation hypothesis.</p>
+</div>
+
+<!-- ════════════ SLIDE 16: PANAS ════════════ -->
+<div class="slide">
+  <h2>PANAS: Pre- &amp; Post-VR Mood</h2>
+  <div class="two-col" style="max-width:1050px;">
+    <div class="col">
+      <h3>Paired <em>t</em>-tests</h3>
+      <table>
+        <tr><th>Scale</th><th>Pre</th><th>Post</th><th><em>t</em>(39)</th><th><em>p</em></th><th><em>d</em></th></tr>
+        <tr><td style="color:#3fb950;">Positive Affect</td><td>34.52</td><td>32.15</td><td>2.09</td><td style="color:#3fb950;">.043*</td><td>−0.33</td></tr>
+        <tr><td>Negative Affect</td><td>12.70</td><td>13.95</td><td>−1.06</td><td>.294</td><td>0.17</td></tr>
+      </table>
+      <div class="highlight" style="margin-top:1rem;">
+        Positive Affect <strong>decreased significantly</strong> after VR. This could reflect: the lingering mood impact of the horror video, general fatigue, or VR-induced discomfort.
+      </div>
+    </div>
+    <div class="col">
+      <img src="figures/png/fig11_panas_change.png" alt="PANAS Change">
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ SLIDE 17: Outliers ════════════ -->
+<div class="slide">
+  <h2>Outlier Analysis</h2>
+  <table>
+    <tr><th>Method</th><th>Variable</th><th>Outliers Found</th><th>Action</th></tr>
+    <tr><td>IQR (1.5×)</td><td>PHQ-9</td><td>3 (scores &gt; 14.2)</td><td>Retained — genuine clinical variability</td></tr>
+    <tr><td>IQR (1.5×)</td><td>GAD-7</td><td>2 (scores &gt; 14.5)</td><td>Retained — genuine clinical variability</td></tr>
+    <tr><td>|<em>z</em>| &gt; 3</td><td>Headtracking Speed</td><td>0</td><td>No extreme values</td></tr>
+    <tr><td>Inspection</td><td>VRISE</td><td>1 (low score = 17)</td><td>Flagged for sensitivity analysis</td></tr>
+  </table>
+  <div class="highlight green" style="margin-top:1rem;">
+    All outliers represent genuine variability, not data errors. No participants were excluded from analysis.
+  </div>
+</div>
+
+<!-- ════════════ SLIDE 18: Summary of Findings ════════════ -->
+<div class="slide">
+  <h2>Summary of Findings</h2>
+  <ol>
+    <li>Sample is <strong>predominantly non-clinical</strong>: 80% below moderate depression threshold</li>
+    <li>Depression &amp; anxiety strongly correlated (Pearson <strong><em>r</em> = .58</strong>) → must control for anxiety in Report 2</li>
+    <li>Videos elicited <strong>distinct emotional profiles</strong>; headtracking speed varies across videos (formal ANOVA deferred to Report 2)</li>
+    <li><strong>No significant differences</strong> in mean headtracking speed between depression groups (Bonferroni α = .002)</li>
+    <li>V4 angular range (<em>p</em> = .048, <em>d</em> = 0.83) is <em>opposite</em> to prediction — non-significant after Bonferroni</li>
+    <li><strong>Positive Affect decreased</strong> significantly after VR (paired <em>t</em>, <em>p</em> = .043, <em>d</em> = −0.33)</li>
+  </ol>
+  <div class="highlight red" style="margin-top:1rem;">
+    <strong>Bottom line:</strong> The original study's finding of reduced scanning speed in depression (Srivastava et al., 2025) was <strong>not replicated</strong> in this preliminary analysis.
+  </div>
+</div>
+
+<!-- ════════════ SLIDE 19: Why No Replication? ════════════ -->
+<div class="slide">
+  <h2>Why Didn't We Replicate?</h2>
+  <ul>
+    <li><strong>Insufficient statistical power:</strong> Only <em>n</em> = 8 in depressed group (vs <em>n</em> = 32). Original had N = 50 with 40% moderate-severe</li>
+    <li><strong>Binary vs. 3-group classification:</strong> Original used minimal / mild / moderate-severe; we collapsed to 2 groups</li>
+    <li><strong>No anxiety covariate:</strong> Original used ANCOVA controlling for GAD-7 and STAI-T; we used simple Welch's <em>t</em>-tests</li>
+    <li><strong>Different equipment:</strong> Meta Quest 3 vs HTC Vive Pro (90 Hz)</li>
+    <li><strong>Different severity distribution:</strong> Our sample is mostly minimal-mild; their sample had 40% moderate-severe</li>
+  </ul>
+</div>
+
+<!-- ════════════ SLIDE 20: Plans for Report 2 ════════════ -->
+<div class="slide">
+  <h2>Plans for Report 2</h2>
+  <ol>
+    <li>Compare <strong>multiple comparison corrections</strong> (Bonferroni / Holm / Benjamini-Hochberg)</li>
+    <li>Use PHQ-9 as <strong>continuous predictor</strong> in regression/GLM</li>
+    <li><strong>ANCOVA</strong> with GAD-7 and STAI-T as covariates — matching the original study's approach</li>
+    <li><strong>Repeated-measures / mixed-effects models</strong> accounting for within-subject structure across 5 videos</li>
+    <li><strong>Video-type interactions:</strong> Do emotional contexts moderate the depression–headtracking relationship?</li>
+    <li><strong>Mediation/moderation</strong> analysis with presence and simulator sickness</li>
+    <li><strong>Effect size estimation &amp; power analysis</strong> given the small sample</li>
+  </ol>
+</div>
+
+<!-- ════════════ SLIDE 21: References ════════════ -->
+<div class="slide">
+  <h2>References</h2>
+  <div class="content-scroll" style="font-size:0.95rem;">
+    <ul style="list-style: none; padding-left: 0;">
+      <li style="margin-bottom:0.7rem;"><strong>Srivastava, P., Lahane, R., Vivek, R., &amp; Pulapa, P. (2025).</strong> What Do Head Scans Reveal About Depression? Insights from 360° Psychomotor Assessment. <em>Proceedings of the Annual Meeting of the Cognitive Science Society, 47</em>(0).</li>
+      <li style="margin-bottom:0.7rem;"><strong>Bennabi, D., et al. (2013).</strong> Psychomotor retardation in depression: A systematic review. <em>BioMed Research International</em>, 2013.</li>
+      <li style="margin-bottom:0.7rem;"><strong>Kalin, N. H. (2020).</strong> The Critical Relationship Between Anxiety and Depression. <em>American Journal of Psychiatry, 177</em>(5), 365–367.</li>
+      <li style="margin-bottom:0.7rem;"><strong>Kourtesis, P., Collina, S., Doumas, L. A. A., &amp; MacPherson, S. E. (2019).</strong> Validation of the Virtual Reality Neuroscience Questionnaire. <em>Frontiers in Human Neuroscience, 13</em>, 417.</li>
+      <li style="margin-bottom:0.7rem;"><strong>Kroenke, K., Spitzer, R. L., &amp; Williams, J. B. (2001).</strong> The PHQ-9: Validity of a brief depression severity measure. <em>Journal of General Internal Medicine, 16</em>(9), 606–613.</li>
+      <li style="margin-bottom:0.7rem;"><strong>Spitzer, R. L., Kroenke, K., Williams, J. B. W., &amp; Löwe, B. (2006).</strong> A brief measure for assessing generalized anxiety disorder: The GAD-7. <em>Archives of Internal Medicine, 166</em>(10), 1092–1097.</li>
+      <li style="margin-bottom:0.7rem;"><strong>Spielberger, C. D., Gorsuch, R. L., Lushene, R., Vagg, P. R., &amp; Jacobs, G. A. (1983).</strong> <em>Manual for the State-Trait Anxiety Inventory</em>. Consulting Psychologists Press.</li>
+      <li style="margin-bottom:0.7rem;"><strong>Watson, D., Clark, L. A., &amp; Tellegen, A. (1988).</strong> Development and validation of brief measures of positive and negative affect: The PANAS scales. <em>Journal of Personality and Social Psychology, 54</em>(6), 1063–1070.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ════════════ SLIDE 22: Thank You ════════════ -->
+<div class="slide section-divider">
+  <h1>Thank You</h1>
+  <div class="line"></div>
+  <p style="font-size:1.2rem; color:#8b949e; margin-top:1rem;">Questions?</p>
+</div>
+
+</div><!-- /deck -->
+
+<!-- Navigation -->
+<div class="nav">
+  <button onclick="prev()" title="Previous (←)">◀</button>
+  <span class="counter" id="counter">1 / 22</span>
+  <button onclick="next()" title="Next (→)">▶</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+  let current = 0;
+
+  function show(n) {
+    slides[current].classList.remove('active');
+    current = Math.max(0, Math.min(n, slides.length - 1));
+    slides[current].classList.add('active');
+    counter.textContent = `${current + 1} / ${slides.length}`;
+    progress.style.width = `${((current + 1) / slides.length) * 100}%`;
+  }
+
+  function next() { show(current + 1); }
+  function prev() { show(current - 1); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+    else if (e.key === 'Home') { e.preventDefault(); show(0); }
+    else if (e.key === 'End') { e.preventDefault(); show(slides.length - 1); }
+  });
+
+  // Touch swipe support
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+  document.addEventListener('touchend', e => {
+    const diff = e.changedTouches[0].screenX - touchStartX;
+    if (Math.abs(diff) > 50) { diff < 0 ? next() : prev(); }
+  });
+
+  show(0);
+</script>
+</body>
+</html>
