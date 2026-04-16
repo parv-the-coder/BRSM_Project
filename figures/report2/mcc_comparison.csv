@@ -1,0 +1,31 @@
+Video,Measure,p_uncorrected,p_bonferroni,p_holm,p_fdr_bh,sig_uncorrected,sig_bonferroni,sig_holm,sig_fdr
+v1,Mean Speed (Total),0.8814355068225037,1.0,1.0,0.9662,False,False,False,False
+v1,Mean Yaw Speed,0.5610941127968991,1.0,1.0,0.9662,False,False,False,False
+v1,SD Speed,0.4956045525704968,1.0,1.0,0.9662,False,False,False,False
+v1,Yaw Range,0.24335394986975178,1.0,1.0,0.9662,False,False,False,False
+v1,Total Range,0.9076545856731615,1.0,1.0,0.9662,False,False,False,False
+v1,SDY (Yaw Position SD),0.9339684051758355,1.0,1.0,0.9662,False,False,False,False
+v2,Mean Speed (Total),0.4746832003797948,1.0,1.0,0.9662,False,False,False,False
+v2,Mean Yaw Speed,0.4342751030057531,1.0,1.0,0.9662,False,False,False,False
+v2,SD Speed,0.9339684051758355,1.0,1.0,0.9662,False,False,False,False
+v2,Yaw Range,0.23505444434237005,1.0,1.0,0.9662,False,False,False,False
+v2,Total Range,0.2629828858931026,1.0,1.0,0.9662,False,False,False,False
+v2,SDY (Yaw Position SD),0.855343052247077,1.0,1.0,0.9662,False,False,False,False
+v3,Mean Speed (Total),0.4956045525704968,1.0,1.0,0.9662,False,False,False,False
+v3,Mean Yaw Speed,0.41480942285895844,1.0,1.0,0.9662,False,False,False,False
+v3,SD Speed,0.2777375396570443,1.0,1.0,0.9662,False,False,False,False
+v3,Yaw Range,0.41480942285895844,1.0,1.0,0.9662,False,False,False,False
+v3,Total Range,0.7780731173920028,1.0,1.0,0.9662,False,False,False,False
+v3,SDY (Yaw Position SD),0.7028598842840329,1.0,1.0,0.9662,False,False,False,False
+v4,Mean Speed (Total),0.2629828858931026,1.0,1.0,0.9662,False,False,False,False
+v4,Mean Yaw Speed,0.3594742504959223,1.0,1.0,0.9662,False,False,False,False
+v4,SD Speed,0.7028598842840329,1.0,1.0,0.9662,False,False,False,False
+v4,Yaw Range,0.039061573426898505,1.0,1.0,0.3906,True,False,False,False
+v4,Total Range,0.039061573426898505,1.0,1.0,0.3906,True,False,False,False
+v4,SDY (Yaw Position SD),0.02466689773191321,0.74,0.74,0.3906,True,False,False,False
+v5,Mean Speed (Total),0.7527415267353348,1.0,1.0,0.9662,False,False,False,False
+v5,Mean Yaw Speed,0.80363572128278,1.0,1.0,0.9662,False,False,False,False
+v5,SD Speed,0.6068702836504695,1.0,1.0,0.9662,False,False,False,False
+v5,Yaw Range,0.7276610001068206,1.0,1.0,0.9662,False,False,False,False
+v5,Total Range,0.7527415267353348,1.0,1.0,0.9662,False,False,False,False
+v5,SDY (Yaw Position SD),0.9867792579866883,1.0,1.0,0.9868,False,False,False,False
